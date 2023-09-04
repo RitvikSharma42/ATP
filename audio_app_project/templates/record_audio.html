@@ -92,6 +92,7 @@
   submitButton.addEventListener('click', () => {
     // Send the recorded audio data to the server via a POST request
     const audioDataURL = audioInput.value;
+    console.log({ audioDataURL });
     fetch('/record/', {
       method: 'POST',
       headers: {

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseBadRequest
 from django.urls import reverse
 from .models import AudioRecording
 import subprocess
@@ -10,19 +10,18 @@ def record_audio(request):
     if request.method == 'POST':
         try:
             print("reaching record_audio")
-            #print(request.FILES)
-            audio_file = request.FILES.get('audioDataURL')
+            #print(request)
+            audio_file = request.body
             if audio_file:
                 print("Audio file present")
-                request.session.pop('last_audio_id', None)
-
                 recording = AudioRecording(audio_file=audio_file)
-                recording.save()
-                request.session['last_audio_id'] = recording.id
+                #recording.save()
+                #request.session['last_audio_id'] = recording.id
+                #print(recording.id)
                 #return JsonResponse({'message': 'Audio recorded successfully'})
-                return render(request, 'display_output.html', {'recording': recording})
+                return render(request, 'run_script.html')
             else:
-                return render(request, 'record_audio.html')
+                return render(request, 'run_script.html')
         except Exception as e:
             return HttpResponseBadRequest(str(e))
 
