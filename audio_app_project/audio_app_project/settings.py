@@ -131,3 +131,12 @@ STATICFILES_FINDERS = [
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+REST_FRAMEWORK = {
+    'FORM_METHOD_OVERRIDE': None,
+    'FORM_CONTENT_OVERRIDE': None,
+    'FORM_CONTENTTYPE_OVERRIDE': None
+}

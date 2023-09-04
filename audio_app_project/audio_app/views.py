@@ -1,61 +1,46 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse,HttpResponseBadRequest
+from django.core.files.base import ContentFile
 from django.urls import reverse
 from .models import AudioRecording
 import subprocess
 import os
 import uuid
-
+from atp_back2 import fin
+import io
 def record_audio(request):
     if request.method == 'POST':
-        try:
-            print("reaching record_audio")
-            #print(request)
-            audio_file = request.body
-            if audio_file:
-                print("Audio file present")
-                recording = AudioRecording(audio_file=audio_file)
-                #recording.save()
-                #request.session['last_audio_id'] = recording.id
-                #print(recording.id)
-                #return JsonResponse({'message': 'Audio recorded successfully'})
-                return render(request, 'run_script.html')
-            else:
-                return render(request, 'run_script.html')
-        except Exception as e:
-            return HttpResponseBadRequest(str(e))
+        print("reaching record_audio")
+
+        # Check if an audio file was uploaded
+        if 'audioFile' in request.FILES:
+            audio_file = request.FILES['audioFile']
+
+            # Assuming you have a model named AudioRecording
+            recordingt = AudioRecording(audio_file=audio_file)
+            recordingt.save()
+
+            path = recordingt.audio_file.path
+
+            result= fin(path)
+            print(result)
+            request.session["result"]=result
+            # You can return a response or redirect as needed
+            return render(request, 'display_output.html',{"result":result})
+        else:
+            print("No audio file uploaded")
 
     return render(request, 'record_audio.html')
 
-def run_script(request, audio_id):
-    try:
-        print("ok, reaching run_script")
-        audio_recording = AudioRecording.objects.get(pk=audio_id)
-        audio_file_path = audio_recording.audio_file.path
 
-        script_output = subprocess.check_output(['python', 'atp_back2.py', audio_file_path])
-
-        script_output = script_output.decode('utf-8')
-
-        audio_recording.script_output = script_output
-        audio_recording.save()
-
-        return render(request, 'display_output.html', {'audioId': audio_id})
-
-    except AudioRecording.DoesNotExist:
-        return JsonResponse({'error': 'Audio recording not found'})
 
 def display_output(request):
-    last_audio_id = request.session.get('last_audio_id')
-
-    if last_audio_id is not None:
-        try:
-            audio_recording = AudioRecording.objects.get(pk=last_audio_id)
-            output_data = audio_recording.script_output
-
-            return render(request, 'display_output.html', {'output_data': output_data})
-        except AudioRecording.DoesNotExist:
-            return JsonResponse({'error': 'Audio recording not found'})
+    
+    result=request.session["result"]
+    try:
+        return render(request, 'display_output.html',{"result":result})
+    except AudioRecording.DoesNotExist:
+        return JsonResponse({'error': 'Audio recording not found'})
 
     return JsonResponse({'error': 'No recent audio recording found'})
 

@@ -1,11 +1,18 @@
+
+{% extends '_base.html' %}
+{% load static %}
+{% block title %}Record Audio{% endblock title %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Script Output</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
 </head>
 <body>
-    <h1>Script Output</h1>
-    <pre>{{ output_data }}</pre>
+    <h1>Output Result: {{ result }}</h1>
 </body>
 </html>
+{% endblock content %}

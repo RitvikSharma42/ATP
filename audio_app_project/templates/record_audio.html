@@ -51,6 +51,7 @@
 
   let mediaRecorder;
   let audioChunks = [];
+  let audioBlob; // Declare audioBlob in the outer scope
 
   startRecordingButton.addEventListener('click', async () => {
     try {
@@ -64,10 +65,7 @@
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-        const audioURL = URL.createObjectURL(audioBlob);
-
-        audioInput.value = audioURL;
+        audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
 
         startRecordingButton.disabled = false;
         stopRecordingButton.disabled = true;
@@ -90,34 +88,38 @@
   });
 
   submitButton.addEventListener('click', () => {
+    if (!audioBlob) {
+      console.error('No recorded audio data.');
+      return;
+    }
+
+    // Create a FormData object and append the audioBlob as a file
+    const formData = new FormData();
+    formData.append('audioFile', audioBlob, 'audio.wav');
+
     // Send the recorded audio data to the server via a POST request
-    const audioDataURL = audioInput.value;
-    console.log({ audioDataURL });
     fetch('/record/', {
       method: 'POST',
       headers: {
         'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
       },
-      body: JSON.stringify({ audioDataURL }),
+      body: formData, // Use the FormData object
     })
       .then(response => {
         if (response.ok) {
           // If the request was successful (status code 200), redirect to the display_output page
           window.location.href = '/display_output/';
-        } else {
-      // Handle other response statuses (e.g., error handling)
-          console.error('Server returned an error:', response.statusText);
-        }
+        } 
       })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
   });
+
   // Function to get CSRF token from cookies
   function getCookie(name) {
     var value = "; " + document.cookie;
     var parts = value.split("; " + name + "=");
     if (parts.length == 2) return parts.pop().split(";").shift();
   }
+
 </script>
+
 {% endblock content %}

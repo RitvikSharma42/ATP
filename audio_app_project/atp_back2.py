@@ -198,13 +198,11 @@ def fin(path):
     result=get_matches(df1,word)
     if len(result)==1:
         try:
-            print(df2["name"][df1[df1.name==result[0]].index.values])
             return (df2["name"][df1[df1.name==result[0]].index.values].to_list()[0])
         except:
             return (result[0])
     else:
         try:
-            print(df2["name"][df1[df1.name==result].index.values][0])
             return (df2["name"][df1[df1.name==result[0]].index.values].to_list()[0])
         except:
             return (result)

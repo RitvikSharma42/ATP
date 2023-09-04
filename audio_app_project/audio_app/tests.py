@@ -1,3 +1,4 @@
 from django.test import TestCase
 
-# Create your tests here.
+client = Client()
+response = client.post(url, content_type='application/json')
