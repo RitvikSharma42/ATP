@@ -9,7 +9,9 @@ import uuid
 def record_audio(request):
     if request.method == 'POST':
         try:
-            audio_file = request.FILES.get('audio_data')
+            print("reaching record_audio")
+            #print(request.FILES)
+            audio_file = request.FILES.get('audioDataURL')
             if audio_file:
                 print("Audio file present")
                 request.session.pop('last_audio_id', None)
@@ -17,7 +19,8 @@ def record_audio(request):
                 recording = AudioRecording(audio_file=audio_file)
                 recording.save()
                 request.session['last_audio_id'] = recording.id
-                return JsonResponse({'message': 'Audio recorded successfully'})
+                #return JsonResponse({'message': 'Audio recorded successfully'})
+                return render(request, 'display_output.html', {'recording': recording})
             else:
                 return render(request, 'record_audio.html')
         except Exception as e:
@@ -27,6 +30,7 @@ def record_audio(request):
 
 def run_script(request, audio_id):
     try:
+        print("ok, reaching run_script")
         audio_recording = AudioRecording.objects.get(pk=audio_id)
         audio_file_path = audio_recording.audio_file.path
 
