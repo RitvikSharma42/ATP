@@ -1,0 +1,122 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block title %}Record Audio{% endblock title %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-offset-4 is-4">
+        <h1 class="title">Record Audio</h1>
+        <article class="message is-success" id="alert">
+          <div class="message-header">
+            <p>Recorded successfully!</p>
+            <button class="delete" aria-label="delete"></button>
+          </div>
+          <div class="message-body">
+            You have successfully recorded your message. You can now click on the Submit button to post it.
+          </div>
+        </article>
+        <div class="field">
+          <div class="control has-icons-left has-icons-right">
+            <input class="input" type="text" placeholder="Language" name="language" id="language" />
+            <span class="icon is-left">
+              <i class="fas fa-language"></i>
+            </span>
+            <span class="icon is-right">
+              <i class="fas fa-check"></i>
+            </span>
+          </div>
+          <div class="control has-icons-left has-icons-right" style="margin-top: 1rem">
+            <!-- Audio recording controls -->
+            <button class="button is-info" id="start-recording">Start Recording</button>
+            <button class="button is-danger" id="stop-recording" disabled>Stop Recording</button>
+          </div>
+          <div class="control" style="margin-top: 1rem">
+            <!-- Hidden audio input field -->
+            <input type="hidden" name="audio_data" id="audio_data" />
+            <button class="button is-info" id="submit" disabled bid="{{ audioId }}">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const startRecordingButton = document.getElementById('start-recording');
+  const stopRecordingButton = document.getElementById('stop-recording');
+  const submitButton = document.getElementById('submit');
+  const audioInput = document.getElementById('audio_data');
+
+  let mediaRecorder;
+  let audioChunks = [];
+
+  startRecordingButton.addEventListener('click', async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          audioChunks.push(e.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioURL = URL.createObjectURL(audioBlob);
+
+        audioInput.value = audioURL;
+
+        startRecordingButton.disabled = false;
+        stopRecordingButton.disabled = true;
+        submitButton.disabled = false;
+      };
+
+      mediaRecorder.start();
+      startRecordingButton.disabled = true;
+      stopRecordingButton.disabled = false;
+      submitButton.disabled = true;
+    } catch (error) {
+      console.error('Error starting recording:', error);
+    }
+  });
+
+  stopRecordingButton.addEventListener('click', () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+    }
+  });
+
+  submitButton.addEventListener('click', () => {
+    // Send the recorded audio data to the server via a POST request
+    const audioDataURL = audioInput.value;
+    fetch('/display_output/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+      },
+      body: JSON.stringify({ audioDataURL }),
+    })
+      .then(response => {
+        if (response.ok) {
+          // If the request was successful (status code 200), redirect to the display_output page
+          window.location.href = '/display_output/';
+        } else {
+      // Handle other response statuses (e.g., error handling)
+          console.error('Server returned an error:', response.statusText);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  });
+  // Function to get CSRF token from cookies
+  function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+  }
+</script>
+{% endblock content %}

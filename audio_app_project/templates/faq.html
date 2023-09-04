@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ Page</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  .container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    padding-bottom: 20px;
+  }
+  .faq-item {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .faq-question {
+    font-weight: bold;
+    color: #555;
+
+  }
+  .image-after-step img {
+        max-width: 100%; /* Set maximum width to fit within the container */
+        height: auto; /* Maintain aspect ratio */
+        width: 350px; /* Set the desired width */
+    }
+
+  .faq-answer {
+    margin-top: 5px;
+    color: #777;
+  }
+</style>
+</head>
+<body>
+
+    <main>
+        <section class="faq-section">
+            <h2>Exploring the App: Frequently Asked Questions.</h2>
+            <div class="faq-item">
+                <h3>👉 About Dehaat Voice App 🎙️</h3>
+                <p>The Dehaat voice App is an online application that converts spoken language into written text. It takes audio as input and returns the transcribed text. Additionally, it has the capability to interact with a product catalogue and retrieve relevant products based on the transcribed content.</p>
+            </div>
+            <div class="faq-item">
+                <h3>👉 How to use Dehaat Voice App?🤔</h3>
+                <p><strong>Step 1: Click on the Record Button:<br></strong>
+                    Find the record button on the navigation bar of the web app interface. This button is typically indicated by a microphone icon.<br>
+                    <br>
+                    <div class="image-after-step">
+                        <img src="{% static 'assets/images/Step 1.png' %}" alt="Step 1">
+                    </div>
+
+                    <strong>Step 2: Start Recording:<br></strong>
+                    After clicking the record button, a microphone icon 🎙️ should appear. Click on this microphone icon to start recording your audio.<br>
+                    <br>
+                    <div class="image-after-step">
+                        <img src="{% static 'assets/images/step 2.png' %}" alt="Step 2">
+                    </div>
+                    <strong>Step 3: Refer to Product Name:<br></strong>
+                    For your convenience, there will be a button displayed on the navigation bar named Product Names. This list indicates the products name you can speak in your recording. Click on the product name button to view the list.<br>
+                    <br>
+                    <div class="image-after-step">
+                        <img src="{% static 'assets/images/step 3.png' %}" alt="Step 3">
+                    </div>
+                    <strong>Step 4: Initiate Audio Recording:<br></strong>
+                    Once the microphone is activated, look for the "Start Audio" icon. Click on this icon to begin recording your speech.<br>
+                    <br>
+                    <div class="image-after-step">
+                        <img src="{% static 'assets/images/step 4.png' %}" alt="Step 4">
+                    </div>
+                    <strong>Step 5: Submit Your Audio:<br></strong>
+                    After you've finished speaking and recording your audio, click the "Submit" button. This action will send your recorded audio to the STT model for transcription.<br>
+                    <br>
+                    <div class="image-after-step">
+                        <img src="{% static 'assets/images/Step 5.png' %}" alt="Step 6">
+                    </div>
+                    <strong>Step 6: View Suggested Products:<br></strong>
+                    Once the audio is transcribed, the app will process the text and suggest relevant products from the catalogue. These suggested product names will be displayed on the screen.<br>
+
+                    </p>
+            </div>
+            <br>
+            <div class="faq-item">
+                <h3>👉 Guidelines for recording Audio📝</h3>
+                <p><strong>1. Choose a Quiet Environment:</strong><br>
+                    Find a quiet space with minimal background noise. Avoid areas with traffic, appliances, or other sources of noise.<br>
+                    <br>
+                    <strong>2. Minimize Echo:</strong><br>
+                    Opt for rooms with soft furnishings like curtains, carpets, and furniture to reduce sound reflection and echo.<br>
+                    <br>
+                    <strong>3. Avoid Filler Words:</strong><br>
+                    Be conscious of using filler words like "um," "uh," "like," and "you know." Speak clearly and confidently.<br>
+                    <br>
+                    <strong>4. Speak Slowly and Clearly:</strong><br>
+                    Enunciate words clearly and avoid speaking too quickly. This helps in accurate transcription.<br>
+                    <br>
+                    <strong>5. Position Microphone Correctly:</strong><br>
+                    Position the microphone close to your mouth to captures your voice optimally while minimizing background noise.<br>
+                    <br>
+
+                    <strong>6. Prevent Humming or Buzzing:</strong><br>
+                    Ensure that electronic devices are properly grounded to avoid any humming or buzzing interference.<br>
+
+                    </p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
