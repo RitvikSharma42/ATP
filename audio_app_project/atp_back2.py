@@ -44,6 +44,17 @@ model = whisperx.load_model("large-v2", device, compute_type=compute_type,langua
 # In[12]:
 
 
+df1=pd.read_csv("catalogue_new_new.csv")
+df2=pd.read_csv("cat_refer.csv")
+df1["o"]=df2["name"]
+for i in range(len(df1)):
+    try:
+        df1["name"][i]=df1["name"][i].replace("ML","")
+        df1["name"][i]=df1["name"][i].replace("L","")
+        df1["name"][i]=df1["name"][i].replace(" ","")
+    except:
+        print(i)
+
 def check_encoding(w1,w2):
     if sd.encode(w1)==sd.encode(w2):
         return w2
@@ -69,6 +80,7 @@ def transcribe_audio_file(ap,language="en"):
     result = model.transcribe(audio, batch_size=batch_size)
     return result["segments"][0]["text"]
 def pre_proc(pred):
+    
     pred=pred.replace(" ", "")
     pred=pred.replace("(", "")
     pred=pred.replace(")", "")
@@ -169,11 +181,6 @@ def get_matches(l,w):
 # In[14]:
 
 
-df1=pd.read_csv("final_cat.csv")
-df2=pd.read_csv("catalogue_new.csv")
-for i in range(len(df1)):
-    df1["name"][i]=df1["name"][i].replace(" ","")
-
 
 # In[20]:
 
@@ -196,14 +203,17 @@ def fin(path):
     res=list(set(initial_word[0]))
     word=initial_word[1].upper()
     result=get_matches(df1,word)
+    print(result)
     if len(result)==1:
         try:
-            return (df2["name"][df1[df1.name==result[0]].index.values].to_list()[0])
+            return list(reversed(df1["o"][df1.name==result[0]].to_list()))
+            #return (df2["name"][df1[df1.name==result[0]].index.values].to_list()[0])
         except:
             return (result[0])
     else:
         try:
-            return (df2["name"][df1[df1.name==result[0]].index.values].to_list()[0])
+            return list(reversed(df1["o"][df1.name==result].to_list()))
+            #return (df2["name"][df1[df1.name==result[0]].index.values].to_list()[0])
         except:
             return (result)
 
